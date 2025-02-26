@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "g0kTcQKOpzk5ql6gn3qAKOaeSoI508azFlm71+Hmp38=",
+  "Source": "TimezoneConverter.Api",
+  "BasePath": "_content/TimezoneConverter.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
