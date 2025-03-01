@@ -13,12 +13,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import TimezoneOutput from "./TimezoneOutput";
 import { TimezoneSelect } from "./TimezoneSelect";
 import { format } from "date-fns";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { cn } from "@/lib/utils";
 import { animate, stagger } from "motion";
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 const formSchema = z.object({
   fromTimezone: z.string(),
@@ -119,22 +119,21 @@ const ConverterForm = () => {
   };
 
   if (isLoadingTimezones) {
-      return <div>
-          <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={cn("animate-spin")}
-          >
-              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-          </svg>
-      </div>;
+      return (
+          <div className="container mx-auto px-4 py-8">
+              <div className="relative space-y-8 w-full max-w-2xl mx-auto p-4 sm:p-6 rounded-lg border bg-card text-card-foreground shadow-sm min-h-[600px]">
+                  <div className="flex justify-between items-center mb-6">
+                      <Skeleton className="h-8 w-48" />
+                      <Skeleton className="h-10 w-10" />
+                  </div>
+                  <div className="space-y-6">
+                      <Skeleton className="h-20 w-full" />
+                      <Skeleton className="h-20 w-full" />
+                      <Skeleton className="h-20 w-full" />
+                  </div>
+              </div>
+          </div>
+      );
   }
 
   if (fetchError) {
@@ -161,7 +160,10 @@ const ConverterForm = () => {
       <div className="relative min-h-screen w-full">
           <div className="container mx-auto px-4 py-8">
               <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="relative space-y-8 w-full max-w-2xl mx-auto p-4 sm:p-6 rounded-lg border bg-card/95 backdrop-blur-sm text-card-foreground shadow-sm">
+                  <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="relative space-y-8 w-full max-w-2xl mx-auto p-4 sm:p-6 rounded-lg border bg-card/95 backdrop-blur-sm text-card-foreground shadow-sm min-h-[600px]"
+                  >
                       <div className="flex justify-between items-center mb-6">
                           <h2 className="text-2xl font-bold">Timezone Converter</h2>
                           <ThemeToggle />
@@ -179,6 +181,7 @@ const ConverterForm = () => {
                                       value={field.value}
                                       setValue={field.onChange}
                                       required
+                                      buttonLabel="Select From Timezone..." // Added accessible name
                                   />
                               )}
                           />
@@ -193,6 +196,7 @@ const ConverterForm = () => {
                                       value={field.value}
                                       setValue={field.onChange}
                                       required
+                                      buttonLabel="Select To Timezone..." // Added accessible name
                                   />
                               )}
                           />
@@ -219,7 +223,7 @@ const ConverterForm = () => {
 
                       <div className="flex flex-wrap gap-2">
                           <Button
-                              type="submit" 
+                              type="submit"
                               disabled={isLoading || !form.getValues("fromTimezone") || !form.getValues("toTimezone")}
                               variant="outline"
                           >
