@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TimezoneConverter.Api.Controllers;
 
 [ApiController]
-[Route("api/timezone")]
+[Route("[controller]")]  // Remove api prefix since it's now handled by subdomain
 public class TimezoneController : ControllerBase
 {
     private readonly ILogger<TimezoneController> _logger;
@@ -13,9 +14,26 @@ public class TimezoneController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("list")]
+    [HttpGet("list")]  // This makes it /timezone/list
     public IActionResult GetTimezones()
     {
+        _logger.LogInformation("GetTimezones called at path: {Path}, base path: {BasePath}",
+            Request.Path,
+            Request.PathBase);
+
+        _logger.LogDebug(
+            "GetTimezones endpoint hit:\n" +
+            "Route Template: {RouteTemplate}\n" +
+            "Request Path: {Path}\n" +
+            "Request PathBase: {PathBase}",
+            ControllerContext.ActionDescriptor.AttributeRouteInfo?.Template,
+            Request.Path,
+            Request.PathBase
+        );
+
+        _logger.LogInformation("GetTimezones called. Request path: {Path}", Request.Path);
+        _logger.LogInformation("Request headers: {@Headers}", Request.Headers);
+
         try
         {
             var timezones = TimeZoneInfo.GetSystemTimeZones()
@@ -27,13 +45,14 @@ public class TimezoneController : ControllerBase
                 .OrderBy(tz => tz.DisplayName)
                 .ToList();
 
-            _logger.LogInformation($"Retrieved {timezones.Count} timezones");
+            _logger.LogInformation("Retrieved {Count} timezones", timezones.Count);
+
             return Ok(timezones);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting timezones");
-            return StatusCode(500, "Error getting timezones");
+            return StatusCode(500, new { error = ex.Message, stack = ex.StackTrace });
         }
     }
 
@@ -45,13 +64,24 @@ public class TimezoneController : ControllerBase
             TimeZoneInfo fromTz = TimeZoneInfo.FindSystemTimeZoneById(fromTimezone);
             TimeZoneInfo toTz = TimeZoneInfo.FindSystemTimeZoneById(toTimezone);
 
-            // Ensure the datetime kind is UTC if the from timezone is UTC
-            if (fromTz.Id == "UTC" && dateTime.Kind != DateTimeKind.Utc)
-                dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+            // Create a DateTimeOffset using the source timezone's offset at the given time
+            var sourceOffset = fromTz.GetUtcOffset(dateTime);
+            var sourceTimeOffset = new DateTimeOffset(dateTime, sourceOffset);
 
-            DateTime convertedTime = TimeZoneInfo.ConvertTime(dateTime, fromTz, toTz);
+            // Convert to the target timezone
+            var targetTime = TimeZoneInfo.ConvertTime(sourceTimeOffset, toTz);
+            var utcTime = targetTime.ToUniversalTime();
 
-            return Ok(new { ConvertedTime = convertedTime });
+            _logger.LogInformation($"Converting {dateTime} from {fromTimezone} to {toTimezone}");
+
+            return Ok(new
+            {
+                InputTime = sourceTimeOffset.ToString("o"),
+                InputTimezone = fromTz.Id,
+                OutputTime = targetTime.ToString("o"),
+                OutputTimezone = toTz.Id,
+                UtcTime = utcTime.ToString("o")
+            });
         }
         catch (TimeZoneNotFoundException)
         {

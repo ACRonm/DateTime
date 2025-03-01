@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
-const inter = Inter({ subsets: ['latin'] });
-
 export const metadata: Metadata = {
-    title: "Timezone Converter",
+    title: "DateTime",
     description: "Convert times between different timezones",
     icons: {
         icon: [
@@ -31,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en" suppressHydrationWarning>
-          <body className={`${inter.className} antialiased`}>
+          <body className={`${GeistSans.className} antialiased`}>
               <ThemeProvider
                   attribute="class"
                   defaultTheme="system"

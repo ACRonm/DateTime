@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY *.sln .
+COPY TimezoneConverter.Api/*.csproj ./TimezoneConverter.Api/
+RUN dotnet restore
+
+# Copy everything else and build
+COPY TimezoneConverter.Api/. ./TimezoneConverter.Api/
+WORKDIR /app/TimezoneConverter.Api
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+COPY --from=build /app/TimezoneConverter.Api/out ./
+ENTRYPOINT ["dotnet", "TimezoneConverter.Api.dll"]

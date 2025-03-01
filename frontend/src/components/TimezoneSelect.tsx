@@ -28,6 +28,7 @@ interface TimezoneSelectProps {
   label: string;
   value?: string;
   setValue?: (value: string) => void;
+    required?: boolean;  // Add this line
 }
 
 export function TimezoneSelect({
@@ -36,6 +37,7 @@ export function TimezoneSelect({
   label,
   value,
   setValue,
+    required,  // Add this line
 }: TimezoneSelectProps) {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -58,7 +60,10 @@ export function TimezoneSelect({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[300px] justify-between"
+                      className={cn(
+                          "w-full justify-between", // Changed from w-[300px]
+                          required && !value && "border-yellow-600"
+                      )}
           >
             {value
               ? timezones.find((timezone) => timezone.id === value)?.displayName
@@ -66,7 +71,7 @@ export function TimezoneSelect({
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[300px] p-0">
+              <PopoverContent className="w-[calc(100vw-2rem)] sm:w-[300px] p-0">
           <Command>
             <CommandInput 
               placeholder="Search timezone..." 

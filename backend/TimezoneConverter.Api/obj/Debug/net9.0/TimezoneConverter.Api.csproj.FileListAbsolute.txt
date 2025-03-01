@@ -34,3 +34,4 @@
 /home/aiden/Projects/web/Timezone/backend/TimezoneConverter.Api/obj/Debug/net9.0/TimezoneConverter.Api.pdb
 /home/aiden/Projects/web/Timezone/backend/TimezoneConverter.Api/obj/Debug/net9.0/TimezoneConverter.Api.genruntimeconfig.cache
 /home/aiden/Projects/web/Timezone/backend/TimezoneConverter.Api/obj/Debug/net9.0/ref/TimezoneConverter.Api.dll
+/home/aiden/Projects/web/Timezone/backend/TimezoneConverter.Api/obj/Debug/net9.0/TimezoneConverter.Api.sourcelink.json

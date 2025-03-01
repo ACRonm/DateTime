@@ -17,6 +17,8 @@ import TimezoneOutput from "./TimezoneOutput";
 import { TimezoneSelect } from "./TimezoneSelect";
 import { format } from "date-fns";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { cn } from "@/lib/utils";
+import { animate, stagger } from "motion";
 
 const formSchema = z.object({
   fromTimezone: z.string(),
@@ -26,6 +28,14 @@ const formSchema = z.object({
 
 type FormSchemaType = z.infer<typeof formSchema>;
 
+type ConversionResponse = {
+    inputTime: string;
+    inputTimezone: string;
+    outputTime: string;
+    outputTimezone: string;
+    utcTime: string;
+};
+
 const ConverterForm = () => {
   const [timezones, setTimezones] = useState<{
     id: string;          // Changed from Id
@@ -33,8 +43,9 @@ const ConverterForm = () => {
   }[]>([]);
   const [fetchError, setFetchError] = useState<string>("");
   const [isLoadingTimezones, setIsLoadingTimezones] = useState(true);
-  const [convertedTime, setConvertedTime] = useState<string>("");
+    const [conversionResult, setConversionResult] = useState<ConversionResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [is12HourTime, setIs12HourTime] = useState<boolean>(false);
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
@@ -51,7 +62,15 @@ const ConverterForm = () => {
       setFetchError("");
       
       try {
-        const response = await fetch("http://localhost:5221/api/timezone/list", {
+          // Log the API URL to debug
+          console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+
+          const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+          if (!baseUrl) {
+              throw new Error('API URL not configured');
+          }
+
+          const response = await fetch(`${baseUrl}/timezone/list`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -62,14 +81,13 @@ const ConverterForm = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const data = await response.json();
-        console.log('Timezone data:', data); // Debug log
+          const data = await response.json();
         setTimezones(data);
       } catch (error) {
         console.error('Failed to fetch timezones:', error);
         setFetchError("Failed to load timezones. Please refresh the page.");
       } finally {
-        setIsLoadingTimezones(false);
+          setIsLoadingTimezones(false);
       }
     };
 
@@ -80,8 +98,8 @@ const ConverterForm = () => {
     setIsLoading(true);
     try {
       const formattedDateTime = format(values.dateTime, "yyyy-MM-dd'T'HH:mm:ss");
-
-      const url = new URL("http://localhost:5221/api/timezone/convert");
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aidenr.dev';
+        const url = new URL(`${baseUrl}/timezone/convert`);
       url.searchParams.append("fromTimezone", values.fromTimezone);
       url.searchParams.append("toTimezone", values.toTimezone);
       url.searchParams.append("dateTime", formattedDateTime);
@@ -90,94 +108,220 @@ const ConverterForm = () => {
       if (!response.ok) {
         throw new Error("Failed to convert time");
       }
-      const data = await response.json();
-      setConvertedTime(
-        format(new Date(data.convertedTime), "yyyy-MM-dd HH:mm:ss")
-      );
+        const data: ConversionResponse = await response.json();
+        setConversionResult(data);
     } catch (error) {
       console.error("Error converting time:", error);
-      setConvertedTime("Error converting time");
+        setConversionResult(null);
     } finally {
       setIsLoading(false);
     }
   };
 
   if (isLoadingTimezones) {
-    return <div>Loading timezones...</div>;
+      return <div>
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={cn("animate-spin")}
+          >
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          </svg>
+      </div>;
   }
 
   if (fetchError) {
     return <div className="text-red-500">{fetchError}</div>;
   }
 
+    const timeFormatOptions: Intl.DateTimeFormatOptions = {
+        timeZone: '',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: is12HourTime
+    };
+
+    // Add animation helper
+    const animateResult = (element: HTMLElement) => {
+        animate(".animate-item", { opacity: 1, y: [50, 0] }, { delay: stagger(0.05) })
+    };
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full max-w-2xl mx-auto p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Timezone Converter</h2>
-          <ThemeToggle />
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="fromTimezone"
-            render={({ field }) => (
-              <TimezoneSelect
-                label="From Timezone"
-                name="fromTimezone"
-                timezones={timezones}
-                value={field.value}
-                setValue={field.onChange}
-              />
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="toTimezone"
-            render={({ field }) => (
-              <TimezoneSelect
-                label="To Timezone"
-                name="toTimezone"
-                timezones={timezones}
-                value={field.value}
-                setValue={field.onChange}
-              />
-            )}
-          />
-        </div>
+      <div className="relative min-h-screen w-full">
+          <div className="container mx-auto px-4 py-8">
+              <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="relative space-y-8 w-full max-w-2xl mx-auto p-4 sm:p-6 rounded-lg border bg-card/95 backdrop-blur-sm text-card-foreground shadow-sm">
+                      <div className="flex justify-between items-center mb-6">
+                          <h2 className="text-2xl font-bold">Timezone Converter</h2>
+                          <ThemeToggle />
+                      </div>
 
-        <FormField
-          control={form.control}
-          name="dateTime"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date Time</FormLabel>
-              <FormControl>
-                <Input
-                  type="datetime-local"
-                  {...field}
-                  value={format(field.value, "yyyy-MM-dd'T'HH:mm:ss")}
-                  onChange={(e) => field.onChange(new Date(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                      <div className="grid grid-cols-1 gap-4">
+                          <FormField
+                              control={form.control}
+                              name="fromTimezone"
+                              render={({ field }) => (
+                                  <TimezoneSelect
+                                      label="From Timezone"
+                                      name="fromTimezone"
+                                      timezones={timezones}
+                                      value={field.value}
+                                      setValue={field.onChange}
+                                      required
+                                  />
+                              )}
+                          />
+                          <FormField
+                              control={form.control}
+                              name="toTimezone"
+                              render={({ field }) => (
+                                  <TimezoneSelect
+                                      label="To Timezone"
+                                      name="toTimezone"
+                                      timezones={timezones}
+                                      value={field.value}
+                                      setValue={field.onChange}
+                                      required
+                                  />
+                              )}
+                          />
+                      </div>
 
-        <Button 
-          type="submit" 
-          disabled={isLoading}
-          variant="outline"
-          className="bg-racing-600 hover:bg-racing-700 dark:bg-racing-500 dark:hover:bg-racing-600"
-        >
-          {isLoading ? "Converting..." : "Convert"}
-        </Button>
+                      <FormField
+                          control={form.control}
+                          name="dateTime"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Date Time</FormLabel>
+                                  <FormControl>
+                                      <Input
+                                          type="datetime-local"
+                                          {...field}
+                                          value={format(field.value, "yyyy-MM-dd'T'HH:mm:ss")}
+                                          onChange={(e) => field.onChange(new Date(e.target.value))}
+                                      />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
 
-        {convertedTime && <TimezoneOutput convertedTime={convertedTime} />}
-      </form>
-    </Form>
+                      <div className="flex flex-wrap gap-2">
+                          <Button
+                              type="submit" 
+                              disabled={isLoading || !form.getValues("fromTimezone") || !form.getValues("toTimezone")}
+                              variant="outline"
+                          >
+                              Convert
+                          </Button>
+                          <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setIs12HourTime(!is12HourTime)}
+                          >
+                              {is12HourTime ? "Switch to 24-hour time" : "Switch to 12-hour time"}
+                          </Button>
+                          <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => {
+                                  const fromTimezone = form.getValues("fromTimezone");
+                                  const toTimezone = form.getValues("toTimezone");
+                                  form.setValue("fromTimezone", toTimezone);
+                                  form.setValue("toTimezone", fromTimezone);
+                              }}
+                          >
+                              Swap Timezones
+                          </Button>
+                      </div>
+
+                      {conversionResult && (
+                          <div
+                              ref={(element) => {
+                                  if (element) {
+                                      animateResult(element);
+                                  }
+                              }}
+                              className="space-y-4 p-6 rounded-lg bg-muted overflow-hidden border-2"
+                          >
+                              <h3 className="text-xl font-bold animate-item">
+                                  Conversion Result
+                              </h3>
+
+                              <div className="grid gap-4">
+                                  <div className="p-4 rounded bg-background animate-item">
+                                      <div className="text-sm text-muted-foreground mb-1">From:</div>
+                                      <div className="text-xl font-semibold break-words">
+                                          {new Date(conversionResult.inputTime).toLocaleString('en-US', {
+                                              ...timeFormatOptions,
+                                              timeZone: conversionResult.inputTimezone,
+                                          })}
+                                      </div>
+                                      <div className="text-sm text-muted-foreground mt-1">
+                                          {conversionResult.inputTimezone}
+                                      </div>
+                                  </div>
+
+                                  <div className="flex justify-center items-center animate-item">
+                                      <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="24"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                      >
+                                          <path d="M12 5v14" />
+                                          <path d="m19 12-7 7-7-7" />
+                                      </svg>
+                                  </div>
+
+                                  <div className="p-4 rounded bg-green-100 dark:bg-green-900/20 border-2 border-green-500 dark:border-green-500/50 animate-item">
+                                      <div className="text-sm text-muted-foreground mb-1">To:</div>
+                                      <div className="text-2xl font-bold break-words text-green-700 dark:text-green-300">
+                                          {new Date(conversionResult.outputTime).toLocaleString('en-US', {
+                                              ...timeFormatOptions,
+                                              timeZone: conversionResult.outputTimezone,
+                                          })}
+                                      </div>
+                                      <div className="text-sm text-green-600 dark:text-green-400 mt-1">
+                                          {conversionResult.outputTimezone}
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <div className="mt-4 p-4 rounded bg-background/50 text-sm animate-item">
+                                  <details>
+                                      <summary className="cursor-pointer font-medium">Show raw times</summary>
+                                      <div className="mt-2 text-xs font-mono whitespace-pre-wrap break-words text-muted-foreground">
+                                          Input: {conversionResult.inputTime}
+                                          <br />
+                                          Output: {conversionResult.outputTime}
+                                          <br />
+                                          UTC: {conversionResult.utcTime}
+                                      </div>
+                                  </details>
+                              </div>
+                          </div>
+                      )}
+                  </form>
+              </Form>
+          </div>
+      </div>
   );
 };
 

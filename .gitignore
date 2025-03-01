@@ -1,0 +1,29 @@
+# Next.js
+.next
+out
+node_modules
+yarn-error.log
+.env.local
+
+# .NET
+bin/
+obj/
+*.csproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.patch
+*.nupkg
+*.vs/
+.vs/
+/artifacts/
+/packages/
+/TestResults/
+
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.bak
+*.tmp

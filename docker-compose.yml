@@ -1,0 +1,56 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://api.aidenr.dev
+    container_name: timezone-app-frontend
+    ports:
+      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.frontend.rule=Host(`datetime.aidenr.dev`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+      - "traefik.http.routers.frontend.priority=1"
+    networks:
+      - web
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.aidenr.dev
+      - PORT=3000
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: timezone-app-backend
+    ports:
+      - "5221:5221"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      # Router configuration
+      - "traefik.http.routers.backend.rule=Host(`api.aidenr.dev`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      # Service configuration
+      - "traefik.http.services.backend-service.loadbalancer.server.port=5221"
+      - "traefik.http.routers.backend.service=backend-service"
+      # Strip prefix middleware
+      - "traefik.http.middlewares.strip-prefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.backend.middlewares=strip-prefix@docker"
+    networks:
+      - web
+    environment:
+      - ASPNETCORE_URLS=http://+:5221
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_LOGGING__LOGLEVEL__DEFAULT=Information
+      - ASPNETCORE_LOGGING__LOGLEVEL__Microsoft.AspNetCore=Debug
+      - ASPNETCORE_LOGGING__LOGLEVEL__Microsoft.AspNetCore.Server.Kestrel=Debug
+
+networks:
+  web:
+    external: true
