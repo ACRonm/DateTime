@@ -27,4 +27,4 @@ Thumbs.db
 *.log
 *.bak
 *.tmp
-/backend/obj/debug
+/backend/TimezoneConverter.Api/bin/*
