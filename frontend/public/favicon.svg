@@ -1,7 +1,37 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" class="stroke-primary"/>
-  <path d="M16 8V16L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="stroke-primary"/>
-  <path d="M16 16L24 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="stroke-primary"/>
-  <circle cx="16" cy="16" r="2" fill="currentColor" class="fill-primary"/>
-  <path d="M27 16C27 21.5 22.5 26 16 26" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2" class="stroke-primary"/>
+  <defs>
+    <linearGradient id="clockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004225" />  <!-- British Racing Green -->
+      <stop offset="100%" stop-color="#00734D" /> <!-- Lighter British Racing Green -->
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="0.8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Subtle background hexagon shape -->
+  <path d="M16 2L28.5 9.5V22.5L16 30L3.5 22.5V9.5L16 2Z" fill="url(#clockGradient)" opacity="0.1" />
+  
+  <!-- Circle with gradient fill -->
+  <circle cx="16" cy="16" r="14" fill="url(#clockGradient)" opacity="0.6" />
+  <circle cx="16" cy="16" r="14" stroke="#00734D" stroke-width="1" opacity="0.7" />
+  
+  <!-- Simplified Digital connection dots -->
+  <circle cx="8" cy="8" r="1" fill="#00734D" opacity="0.7" />
+  <circle cx="24" cy="8" r="1" fill="#00734D" opacity="0.7" />
+  <circle cx="8" cy="24" r="1" fill="#00734D" opacity="0.7" />
+  <circle cx="24" cy="24" r="1" fill="#00734D" opacity="0.7" />
+  
+  <!-- Clock hands with subtle glow effect -->
+  <path d="M16 8V16L20 20" stroke="#00A36C" stroke-width="2" stroke-linecap="round" filter="url(#glow)" />
+  <path d="M16 16L24 16" stroke="#C2B280" stroke-width="1.5" stroke-linecap="round" filter="url(#glow)" />
+  
+  <!-- Clock center -->
+  <circle cx="16" cy="16" r="2" fill="#00734D" opacity="0.9" />
+  
+  <!-- Orbit path -->
+  <path d="M27 16C27 21.5 22.5 26 16 26" stroke="#00734D" stroke-width="1" stroke-dasharray="2 2" opacity="0.5">
+    <animate attributeName="stroke-dashoffset" values="0;-20" dur="5s" repeatCount="indefinite" />
+  </path>
 </svg>

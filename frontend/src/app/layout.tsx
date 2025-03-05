@@ -1,25 +1,14 @@
 import type { Metadata } from "next";
-import { GeistSans } from 'geist/font/sans';
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Sidebar } from "@/components/Sidebar";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "DateTime",
-    description: "Convert times between different timezones",
-    icons: {
-        icon: [
-            {
-                media: '(prefers-color-scheme: light)',
-                url: '/favicon.svg',
-                href: '/favicon.svg',
-            },
-            {
-                media: '(prefers-color-scheme: dark)',
-                url: '/favicon.svg',
-                href: '/favicon.svg',
-            },
-        ],
-    },
+    title: "Timezone - Manage Time Across Zones",
+    description: "Convert times, schedule events, and manage time across multiple timezones.",
 };
 
 export default function RootLayout({
@@ -29,14 +18,21 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en" suppressHydrationWarning>
-          <body>
+          <body className={inter.className}>
               <ThemeProvider
                   attribute="class"
                   defaultTheme="system"
                   enableSystem
                   disableTransitionOnChange
               >
-                  {children}
+                  <div className="flex h-screen">
+                      <div className="hidden md:block">
+                          <Sidebar />
+                      </div>
+                      <div className="flex-1 overflow-y-auto">
+                          {children}
+                      </div>
+                  </div>
               </ThemeProvider>
       </body>
     </html>

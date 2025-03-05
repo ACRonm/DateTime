@@ -61,9 +61,7 @@ const ConverterForm = () => {
       setIsLoadingTimezones(true);
       setFetchError("");
       
-      try {
-          // Log the API URL to debug
-          console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+        try {
 
           const baseUrl = process.env.NEXT_PUBLIC_API_URL;
           if (!baseUrl) {
@@ -161,8 +159,8 @@ const ConverterForm = () => {
               className="relative space-y-8 w-full max-w-2xl p-4 sm:p-6 rounded-lg border bg-card/95 backdrop-blur-sm text-card-foreground shadow-sm min-h-[600px]"
           >
               <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">Timezone Converter</h2>
-                  <ThemeToggle />
+                    <h2 className="text-2xl font-bold">Timezone Converter</h2>
+                    <ThemeToggle />
               </div>
 
               <div className="grid grid-cols-1 gap-4">
