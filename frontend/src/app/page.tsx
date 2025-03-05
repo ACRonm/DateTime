@@ -159,21 +159,29 @@ function ClockDisplay() {
                         <stop offset="0%" stopColor="#004225" />
                         <stop offset="100%" stopColor="#00734D" />
                     </linearGradient>
-                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="0.8" result="blur" />
+                    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%" filterUnits="objectBoundingBox">
+                        <feGaussianBlur stdDeviation="1.2" result="blur" />
                         <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
                 </defs>
 
+                {/* Background elements - rendered first (at the bottom) */}
                 <path d="M16 2L28.5 9.5V22.5L16 30L3.5 22.5V9.5L16 2Z" fill="url(#clockGradient)" opacity="0.1" />
                 <circle cx="16" cy="16" r="14" fill="url(#clockGradient)" opacity="0.6" />
                 <circle cx="16" cy="16" r="14" stroke="#00734D" strokeWidth="1.5" opacity="0.7" />
 
-                <circle cx="8" cy="8" r="1" fill="#00734D" opacity="0.7" />
-                <circle cx="24" cy="8" r="1" fill="#00734D" opacity="0.7" />
-                <circle cx="8" cy="24" r="1" fill="#00734D" opacity="0.7" />
-                <circle cx="24" cy="24" r="1" fill="#00734D" opacity="0.7" />
+                {/* Clock markers */}
+                <circle cx="16" cy="4.5" r="1" fill="#00734D" opacity="0.7" /> {/* 12:00 */}
+                <circle cx="27.5" cy="16" r="1" fill="#00734D" opacity="0.7" /> {/* 3:00 */}
+                <circle cx="16" cy="27.5" r="1" fill="#00734D" opacity="0.7" /> {/* 6:00 */}
+                <circle cx="4.5" cy="16" r="1" fill="#00734D" opacity="0.7" /> {/* 9:00 */}
 
+                {/* Animated decorative path */}
+                <path d="M24 16 C24 20.3 20.3 23.5 16 23.5" stroke="#00734D" strokeWidth="1.5" strokeDasharray="2 2" opacity="0.5">
+                    <animate attributeName="stroke-dashoffset" values="0;-4" dur="2s" repeatCount="indefinite" />
+                </path>
+
+                {/* Clock hands - rendered later (above the background) */}
                 <path
                     d={`M16 16L${16 + 8 * Math.sin(time.getHours() * 30 * Math.PI / 180)} ${16 - 8 * Math.cos(time.getHours() * 30 * Math.PI / 180)}`}
                     stroke="#00A36C"
@@ -191,11 +199,8 @@ function ClockDisplay() {
                     opacity="0.9"
                 />
 
+                {/* Center circle - rendered last (on top of everything) */}
                 <circle cx="16" cy="16" r="2" fill="#00734D" opacity="0.9" />
-
-                <path d="M27 16C27 21.5 22.5 26 16 26" stroke="#00734D" strokeWidth="1.5" strokeDasharray="2 2" opacity="0.5">
-                    <animate attributeName="stroke-dashoffset" values="0;-20" dur="5s" repeatCount="indefinite" />
-                </path>
             </svg>
             <div className="text-center mt-4 text-primary">
                 <p className="text-2xl font-mono">
