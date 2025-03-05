@@ -181,7 +181,6 @@ function ClockDisplay() {
                     <animate attributeName="stroke-dashoffset" values="0;-4" dur="2s" repeatCount="indefinite" />
                 </path>
 
-                {/* Clock hands - rendered later (above the background) */}
                 <path
                     d={`M16 16L${16 + 8 * Math.sin(time.getHours() * 30 * Math.PI / 180)} ${16 - 8 * Math.cos(time.getHours() * 30 * Math.PI / 180)}`}
                     stroke="#00A36C"
