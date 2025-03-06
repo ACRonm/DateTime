@@ -43,14 +43,69 @@ services:
       - "traefik.http.middlewares.strip-prefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.backend.middlewares=strip-prefix@docker"
     networks:
-      - web
+      web:
+        aliases:
+          - backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
     environment:
       - ASPNETCORE_URLS=http://+:5221
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_LOGGING__LOGLEVEL__DEFAULT=Information
       - ASPNETCORE_LOGGING__LOGLEVEL__Microsoft.AspNetCore=Debug
       - ASPNETCORE_LOGGING__LOGLEVEL__Microsoft.AspNetCore.Server.Kestrel=Debug
+      - ConnectionStrings__DefaultConnection=Server=postgres;Port=5432;Database=datetime_db;User Id=aidenr;Password=legoS9ions;
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "postgres:172.17.0.1"
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: datetime-postgres
+    environment:
+      POSTGRES_USER: aidenr
+      POSTGRES_PASSWORD: legoS9ions
+      POSTGRES_DB: datetime_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aidenr -d datetime_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      web:
+        aliases:
+          - postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: datetime-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@aidenr.dev
+      PGADMIN_DEFAULT_PASSWORD: legoS9ions
+      # Configure the server via environment variables instead of mounted files
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - web
 
 networks:
   web:
     external: true
+
+volumes:
+  postgres-data:
+  pgadmin-data:

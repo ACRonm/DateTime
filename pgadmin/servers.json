@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "DateTime DB",
+      "Group": "Servers",
+      "Host": "datetime-postgres",
+      "Port": 5432,
+      "MaintenanceDB": "datetime_db",
+      "Username": "aidenr",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    }
+  }
+}
