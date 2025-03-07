@@ -24,66 +24,65 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="relative w-full min-h-screen">
+      <div className="flex items-center justify-center min-h-screen p-4 relative">
       <Meteors />
-      <div className="relative flex h-full min-h-screen flex-col items-center justify-start pt-20 p-4">
-        <h1 className="text-4xl font-bold p-5 text-white text-center w-full">
+          <div className="w-full max-w-3xl">
+              <h1 className="text-4xl font-bold text-center mb-8">
           Event Countdowns
         </h1>
-        
-        <div className="flex flex-col w-full max-w-3xl gap-8">
-          {/* Event Creation Form */}
-          <div className="w-full">
-            <h2 className="text-2xl font-semibold mb-4 text-white">Create New Event</h2>
-            <EventForm onEventCreate={(newEvent) => {
-              const updatedEvents = {
-                ...events,
-                [newEvent.id]: newEvent
-              };
-              setEvents(updatedEvents);
-            }} />
-          </div>
 
-          {/* List of Existing Events */}
-          <div className="w-full">
-            <h2 className="text-2xl font-semibold mb-4 text-white">Your Events</h2>
-            
-            {Object.keys(events).length === 0 ? (
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 shadow-lg w-full text-center">
-                <CalendarCheck className="mx-auto h-12 w-12 text-slate-400 mb-2" />
-                <p className="text-slate-300">You haven't created any events yet</p>
-              </div>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2">
-                {Object.entries(events).map(([id, event]: [string, any]) => (
-                  <div key={id} className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-4 shadow-lg">
-                    <h3 className="text-xl font-medium text-white mb-2">{event.name}</h3>
-                    <p className="text-slate-300 mb-3">
+              {/* Event Creation Form */}
+              <EventForm onEventCreate={(newEvent) => {
+                  const updatedEvents = {
+                      ...events,
+                      [newEvent.id]: newEvent
+                  };
+                  setEvents(updatedEvents);
+              }} />
+
+              {/* List of Existing Events */}
+              <div className="w-full mt-8 mb-10">
+                  <h2 className="text-2xl font-semibold mb-4">Your Events</h2>
+
+                  {Object.keys(events).length === 0 ? (
+                      <div className="bg-card/95 backdrop-blur-sm rounded-lg p-6 shadow-lg w-full text-center border-2">
+                          <CalendarCheck className="mx-auto h-12 w-12 text-muted-foreground mb-2" />
+                          <p className="text-muted-foreground">You haven't created any events yet</p>
+                      </div>
+                  ) : (
+                      <div className="grid gap-4 md:grid-cols-2">
+                          {Object.entries(events).map(([id, event]: [string, any]) => (
+                              <div key={id} className="bg-card/95 backdrop-blur-sm rounded-lg p-6 shadow-lg border-2">
+                                  <h3 className="text-xl font-medium mb-2">{event.name}</h3>
+                                  <div className="mb-4">
+                                      <p className="text-muted-foreground">
                       {new Date(`${event.date}T${event.time}`).toLocaleString(undefined, {
                         dateStyle: "long",
                         timeStyle: "short",
                       })}
-                      <span className="block text-sm opacity-80">({event.timezone})</span>
                     </p>
-                    <div className="flex justify-between">
-                      <Link 
-                        href={`/event/${id}`}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg"
-                      >
-                        View Event
-                      </Link>
-                      <button 
-                        onClick={() => handleDeleteEvent(id)}
-                        className="px-4 py-2 bg-transparent hover:bg-red-600/20 text-red-400 hover:text-red-300 text-sm font-medium rounded-lg border border-red-500/30"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                                      <p className="text-sm text-muted-foreground/80">
+                                          ({event.timezone})
+                                      </p>
+                                  </div>
+                                  <div className="flex justify-between pt-2 border-t border-border/40">
+                                      <Link
+                                          href={`/event/${id}`}
+                                          className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded-md transition-colors"
+                                      >
+                                          View Event
+                                      </Link>
+                                      <button
+                                          onClick={() => handleDeleteEvent(id)}
+                                          className="px-4 py-2 bg-background hover:bg-destructive/10 text-destructive hover:text-destructive/90 text-sm font-medium rounded-md border border-destructive/30 transition-colors"
+                                      >
+                                          Delete
+                                      </button>
+                                  </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                          ))}
+                      </div>
+                  )}
         </div>
       </div>
     </div>

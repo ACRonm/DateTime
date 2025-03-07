@@ -117,10 +117,10 @@ export default function EventPage() {
 
   if (loading) {
     return (
-      <div className="relative w-full min-h-screen">
+        <div className="flex items-center justify-center min-h-screen p-4 relative">
         <Meteors />
-        <div className="relative flex min-h-screen flex-col items-center justify-center p-4">
-          <div className="animate-pulse h-48 w-full max-w-2xl rounded-xl bg-slate-800/50"></div>
+            <div className="w-full max-w-3xl">
+                <div className="animate-pulse w-full rounded-lg border-2 bg-card/60 backdrop-blur-sm p-6 shadow-lg min-h-[300px]"></div>
         </div>
       </div>
     );
@@ -128,15 +128,15 @@ export default function EventPage() {
 
   if (error || !event) {
     return (
-      <div className="relative w-full min-h-screen">
+        <div className="flex items-center justify-center min-h-screen p-4 relative">
         <Meteors />
-        <div className="relative flex min-h-screen flex-col items-center justify-center p-4">
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 shadow-xl text-center max-w-md">
-            <h1 className="text-2xl font-bold text-white mb-4">Event Not Found</h1>
-            <p className="text-slate-300 mb-6">{error || "This event doesn't exist or has been removed."}</p>
+            <div className="w-full max-w-3xl">
+                <div className="w-full rounded-lg border-2 bg-card/95 backdrop-blur-sm p-6 shadow-lg text-center">
+                    <h1 className="text-2xl font-bold mb-4">Event Not Found</h1>
+                    <p className="text-muted-foreground mb-6">{error || "This event doesn't exist or has been removed."}</p>
             <Button
               onClick={() => window.location.href = '/events'}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+                        variant="outline"
             >
               Back to Events
             </Button>
@@ -149,61 +149,58 @@ export default function EventPage() {
   const targetDate = new Date(event.startTime);
 
   return (
-    <div className="relative w-full min-h-screen">
-      <Meteors />
-      <div className="relative flex min-h-screen flex-col items-center justify-start pt-10 p-4">
-        <div className="w-full max-w-3xl">
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-xl">
-            <div className="flex justify-between items-start mb-6">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">{event.title}</h1>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-slate-300 border-slate-600"
-                onClick={handleShare}
-              >
-                {copied ? "Copied!" : <Share2 className="h-4 w-4" />}
-              </Button>
-            </div>
-            
-            {event.description && (
-              <p className="text-slate-300 mb-6">{event.description}</p>
-            )}
-            
-            <div className="mb-8">
-              <div className="text-lg font-medium text-white mb-1">Countdown</div>
-              <CountdownTimer targetDate={targetDate} />
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <CalendarDays className="h-5 w-5 text-blue-400 mt-0.5" />
-                <div>
-                  <div className="text-sm text-slate-400">Original Time</div>
-                  <div className="text-white">
-                    {new Date(event.startTime).toLocaleString(undefined, {
-                      dateStyle: "full",
-                      timeStyle: "short"
-                    })}
+      <div className="flex items-center justify-center min-h-screen p-4 relative">
+          <Meteors />
+          <div className="w-full max-w-3xl">
+              <div className="w-full rounded-lg border-2 bg-card/95 backdrop-blur-sm p-6 shadow-lg">
+                  <div className="flex justify-between items-start mb-6">
+                      <h1 className="text-2xl sm:text-3xl font-bold">{event.title}</h1>
+                      <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleShare}
+                      >
+                          {copied ? "Copied!" : <Share2 className="h-4 w-4" />}
+                      </Button>
                   </div>
-                  <div className="text-sm text-slate-500">{event.timezone}</div>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <Clock className="h-5 w-5 text-green-400 mt-0.5" />
-                <div>
-                  <div className="text-sm text-slate-400">Your Local Time</div>
-                  <div className="text-white">{userLocalTime}</div>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <Globe className="h-5 w-5 text-purple-400 mt-0.5" />
-                <div>
-                  <div className="text-sm text-slate-400">Your Timezone</div>
-                  <div className="text-white">{Intl.DateTimeFormat().resolvedOptions().timeZone}</div>
-                </div>
+
+                  {event.description && (
+                      <p className="text-muted-foreground mb-6">{event.description}</p>
+                  )}
+
+                  <div className="mb-8">
+                      <div className="text-lg font-medium mb-1">Countdown</div>
+                      <CountdownTimer targetDate={targetDate} />
+                  </div>
+
+                  <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                          <CalendarDays className="h-5 w-5 text-primary mt-0.5" />
+                          <div>
+                              <div className="text-sm text-muted-foreground">Original Time</div>
+                              <div className="font-medium">
+                                  {new Date(event.startTime).toLocaleString(undefined, {
+                                      dateStyle: "full",
+                                      timeStyle: "short"
+                                  })}
+                              </div>
+                              <div className="text-sm text-muted-foreground/80">{event.timezone}</div>
+                          </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                          <Clock className="h-5 w-5 text-primary mt-0.5" />
+                          <div>
+                              <div className="text-sm text-muted-foreground">Your Local Time</div>
+                              <div className="font-medium">{userLocalTime}</div>
+                          </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                          <Globe className="h-5 w-5 text-primary mt-0.5" />
+                          <div>
+                              <div className="text-sm text-muted-foreground">Your Timezone</div>
+                              <div className="font-medium">{Intl.DateTimeFormat().resolvedOptions().timeZone}</div>
               </div>
             </div>
           </div>

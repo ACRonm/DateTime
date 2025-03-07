@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Sidebar } from "@/components/Sidebar";
+import { LoadingBar } from "@/components/LoadingBar";
+import { PageTransition } from "@/components/PageTransition";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,12 +27,15 @@ export default function RootLayout({
                   enableSystem
                   disableTransitionOnChange
               >
+                  <LoadingBar />
                   <div className="flex h-screen">
                       <div className="hidden md:block">
                           <Sidebar />
                       </div>
                       <div className="flex-1 overflow-y-auto">
-                          {children}
+                          <PageTransition>
+                              {children}
+                          </PageTransition>
                       </div>
                   </div>
               </ThemeProvider>

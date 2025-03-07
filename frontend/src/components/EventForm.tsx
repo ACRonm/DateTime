@@ -200,9 +200,8 @@ export default function EventForm({ onEventCreate }: EventFormProps) {
   
   if (isLoadingTimezones) {
     return (
-      <div className="relative space-y-8 w-full max-w-2xl p-4 sm:p-6 rounded-lg border bg-card text-card-foreground shadow-sm min-h-[600px]">
-        <div className="flex justify-between items-center mb-6">
-          <Skeleton className="h-8 w-48" />
+        <div className="w-full rounded-lg border-2 bg-card/95 backdrop-blur-sm p-6 shadow-lg min-h-[550px]">
+            <div className="flex justify-end items-center mb-6">
           <Skeleton className="h-10 w-10" />
         </div>
         <div className="space-y-6">
@@ -218,10 +217,9 @@ export default function EventForm({ onEventCreate }: EventFormProps) {
     <Form {...form}>
       <form 
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="relative space-y-8 w-full max-w-2xl p-4 sm:p-6 rounded-lg border bg-card/95 backdrop-blur-sm text-card-foreground shadow-sm min-h-[600px]"
+              className="w-full rounded-lg border-2 bg-card/95 backdrop-blur-sm p-6 shadow-lg space-y-6"
       >
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Create Event</h2>
+              <div className="flex justify-end items-center">
           <ThemeToggle />
         </div>
 
