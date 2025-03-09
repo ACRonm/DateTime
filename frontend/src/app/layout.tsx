@@ -1,16 +1,36 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Sidebar } from "@/components/Sidebar";
 import { LoadingBar } from "@/components/LoadingBar";
 import { PageTransition } from "@/components/PageTransition";
+import { MobileNav } from "@/components/MobileNav";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Timezone - Manage Time Across Zones",
-    description: "Convert times, schedule events, and manage time across multiple timezones.",
+    title: "Timezone Management",
+    description: "Convert times across timezones, schedule events, and manage global meetings with ease.",
+    icons: {
+        icon: [
+            { url: '/favicon.svg', type: 'image/svg+xml' },
+            { url: '/favicon.ico', type: 'image/x-icon' }
+        ],
+    },
+    manifest: "/manifest.json",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "black-translucent",
+        title: "Timezone"
+    },
+};
+
+export const viewport: Viewport = {
+    themeColor: "#00A36C",
+    width: "device-width",
+    initialScale: 1,
 };
 
 export default function RootLayout({
@@ -38,8 +58,9 @@ export default function RootLayout({
                           </PageTransition>
                       </div>
                   </div>
+                  <MobileNav />
               </ThemeProvider>
-      </body>
-    </html>
+          </body>
+      </html>
   );
 }

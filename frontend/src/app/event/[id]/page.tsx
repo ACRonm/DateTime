@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
+import { getApiUrl } from "@/lib/api-config";
 import { useParams } from "next/navigation";
 import { Meteors } from "@stianlarsen/meteors";
 import { CalendarDays, Clock, Globe, Share2 } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
 import { Button } from "@/components/ui/button";
-import { getApiUrl } from "@/lib/api-config";
 
 interface Event {
   id: string;
@@ -44,8 +44,8 @@ export default function EventPage() {
     // Try to fetch from API through the Next.js API route proxy
     const fetchEvent = async () => {
       try {
-        // Use relative URL to go through Next.js API route (avoids CORS)
-        const response = await fetch(`/api/events/share/${id}`);
+          // Use getApiUrl helper to target external API
+          const response = await fetch(getApiUrl(`/api/events/share/${id}`));
         if (!response.ok) {
           throw new Error(`Event not found (${response.status})`);
         }

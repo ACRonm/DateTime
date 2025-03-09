@@ -9,7 +9,7 @@ using TimezoneConverter.Api.Models;
 namespace TimezoneConverter.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class EventsController : ControllerBase
     {
         private readonly EventRepository _eventRepository;
@@ -21,7 +21,7 @@ namespace TimezoneConverter.Api.Controllers
             _logger = logger;
         }
 
-        // GET: api/events
+        // GET: /events
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
@@ -29,7 +29,7 @@ namespace TimezoneConverter.Api.Controllers
             return await _eventRepository.GetAllEventsAsync();
         }
 
-        // GET: api/events/5
+        // GET: /events/5
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Event>> GetEvent(Guid id)
         {
@@ -44,7 +44,7 @@ namespace TimezoneConverter.Api.Controllers
             return eventItem;
         }
         
-        // GET: api/events/share/{uuid}
+        // GET: /events/share/{uuid}
         [HttpGet("share/{uuid}")]
         public async Task<ActionResult<Event>> GetEventByShareableId(string uuid)
         {
@@ -59,7 +59,7 @@ namespace TimezoneConverter.Api.Controllers
             return eventItem;
         }
 
-        // POST: api/events
+        // POST: /events
         [HttpPost]
         public async Task<ActionResult<Event>> CreateEvent(Event eventItem)
         {

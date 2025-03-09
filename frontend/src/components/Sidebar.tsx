@@ -145,7 +145,7 @@ export function Sidebar() {
                   key={route.href}
                   href={route.href}
                   className={cn(
-                    "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 flex items-center rounded-md px-3 py-2 transition-all",
+                      "text-sidebar-foreground/90 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 flex items-center rounded-md px-3 py-2 transition-all",
                     pathname === route.href && "bg-sidebar-accent text-sidebar-foreground"
                   )}
                 >
@@ -165,7 +165,7 @@ export function Sidebar() {
       )}>
         {!isCollapsed ? (
           <div className="flex items-center justify-between">
-            <div className="text-sm text-sidebar-foreground/60">
+                      <div className="text-sm text-sidebar-foreground/80">
               Current Timezone
               <div className="font-medium text-sidebar-foreground truncate max-w-[150px]">
                 {Intl.DateTimeFormat().resolvedOptions().timeZone}

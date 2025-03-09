@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Clock, Calendar, Globe, ArrowRight, Settings, Hexagon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { InstallPWA } from "@/components/InstallPWA";
 
 export default function HomePage() {
     return (
@@ -16,7 +17,7 @@ export default function HomePage() {
             </div>
             <section className="py-12 md:py-24 space-y-8 relative">
                 <div className="text-center space-y-4">
-                    <h1 className="relative text-4xl md:text-6xl font-bold tracking-tight">
+                    <h1 className="relative text-4xl md:text-6xl font-bold tracking-tight min-h-[3.5rem] md:min-h-[5rem]">
                         Timezone Management <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#00A36C]">Made Simple</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
@@ -32,30 +33,34 @@ export default function HomePage() {
                         <Button variant="outline" asChild size="lg" className="border-primary/30 hover:bg-primary/5">
                             <Link href="/events">Create Event</Link>
                         </Button>
+                        <InstallPWA />
                     </div>
                 </div>
             </section>
 
             {/* Features Section */}
-            <section className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <FeatureCard
-                    icon={<Clock className="h-10 w-10 text-[#00A36C]" />}
-                    title="Timezone Converter"
-                    description="Convert times between different timezones quickly and accurately with our easy-to-use converter tool."
-                    href="/converter"
-                />
-                <FeatureCard
-                    icon={<Calendar className="h-10 w-10 text-primary" />}
-                    title="Event Scheduler"
-                    description="Create and manage events across multiple timezones. Perfect for scheduling international meetings."
-                    href="/events"
-                />
-                <FeatureCard
-                    icon={<Globe className="h-10 w-10 text-[#C2B280]" />}
-                    title="Timezone Tool"
-                    description="Explore timezones around the world and find the current time in any location."
-                    href="/timezone"
-                />
+            <section className="py-12">
+                <h2 className="text-3xl font-bold mb-6 tracking-tight">Key Features</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <FeatureCard
+                        icon={<Clock className="h-10 w-10 text-[#00A36C]" />}
+                        title="Timezone Converter"
+                        description="Convert times between different timezones quickly and accurately with our easy-to-use converter tool."
+                        href="/converter"
+                    />
+                    <FeatureCard
+                        icon={<Calendar className="h-10 w-10 text-primary" />}
+                        title="Event Scheduler"
+                        description="Create and manage events across multiple timezones. Perfect for scheduling international meetings."
+                        href="/events"
+                    />
+                    <FeatureCard
+                        icon={<Globe className="h-10 w-10 text-[#C2B280]" />}
+                        title="Timezone Tool"
+                        description="Explore timezones around the world and find the current time in any location."
+                        href="/timezone"
+                    />
+                </div>
             </section>
 
             {/* Benefits Section */}
@@ -152,8 +157,8 @@ function ClockDisplay() {
 
     // Only render the time client-side to prevent hydration mismatch
     return (
-        <div className="aspect-video rounded flex items-center justify-between relative px-6">
-            <svg width="200" height="200" viewBox="0 0 32 32" className="w-40 h-40">
+        <div className="aspect-video rounded flex flex-col md:flex-row items-center md:justify-between relative px-6">
+            <svg width="200" height="200" viewBox="0 0 32 32" className="w-32 h-32 md:w-40 md:h-40">
                 <defs>
                     <linearGradient id="clockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#004225" />
@@ -201,12 +206,12 @@ function ClockDisplay() {
                 {/* Center circle - rendered last (on top of everything) */}
                 <circle cx="16" cy="16" r="2" fill="#00734D" opacity="0.9" />
             </svg>
-            <div className="text-center mt-4 text-primary">
-                <p className="text-2xl font-mono">
-                    {isMounted ? formattedTime : "Loading..."}
+            <div className="text-center mt-4 md:mt-0 text-primary">
+                <p className="text-xl md:text-2xl font-mono h-[24px]">
+                    {isMounted ? formattedTime : "00:00:00 AM"}
                 </p>
-                <p className="text-sm opacity-60">
-                    {isMounted ? Intl.DateTimeFormat().resolvedOptions().timeZone : ""}
+                <p className="text-sm opacity-60 h-[20px]">
+                    {isMounted ? Intl.DateTimeFormat().resolvedOptions().timeZone : "Your Timezone"}
                 </p>
             </div>
         </div>

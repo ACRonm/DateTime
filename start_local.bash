@@ -12,7 +12,7 @@ tmux new-session -d -s timezone_dev
 
 # Create a window for the frontend
 tmux new-window -t timezone_dev:1 -n frontend
-tmux send-keys -t timezone_dev:1 "cd /frontend" C-m
+tmux send-keys -t timezone_dev:1 "cd /home/aiden/Projects/web/Timezone/frontend" C-m
 tmux send-keys -t timezone_dev:1 "npm install" C-m
 tmux send-keys -t timezone_dev:1 "npm run dev" C-m
 

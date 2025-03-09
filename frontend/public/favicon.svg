@@ -4,9 +4,9 @@
       <stop offset="0%" stop-color="#004225" />  <!-- British Racing Green -->
       <stop offset="100%" stop-color="#00734D" /> <!-- Lighter British Racing Green -->
     </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="0.8" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <filter id="glow" x="-100%" y="-30%" width="300%" height="300%">
+        <feGaussianBlur stdDeviation="0.8" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
   </defs>
   

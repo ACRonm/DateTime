@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { CalendarIcon, Clock } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { animate, stagger } from "motion";
 
@@ -116,7 +116,7 @@ export default function EventForm({ onEventCreate }: EventFormProps) {
             };
 
             // Use the Next.js API route instead of direct API call
-            const response = await fetch("/api/events", {
+            const response = await fetch(getApiUrl(`/api/events/`), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

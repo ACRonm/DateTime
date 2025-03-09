@@ -50,10 +50,13 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "http://localhost:3000",      // Next.js default dev server
                 "http://localhost:3001",      // Another common Next.js port
-                "https://timezone.aidenr.dev" // Production URL (adjust as needed)
+                "https://datetime.aidenr.dev", // Production URL
+                "https://aidenr.dev",          // Root domain
+                "https://www.aidenr.dev"       // www subdomain
             )
             .AllowAnyMethod()
             .AllowAnyHeader()
+            .WithExposedHeaders("Content-Disposition")
             .AllowCredentials();
     });
 });
